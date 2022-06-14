@@ -1,1 +1,3 @@
-// Export all types and methods
+import Scrollery from './scrollery/scrollery';
+
+export default Scrollery;
