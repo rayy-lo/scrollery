@@ -18,9 +18,11 @@ class Scrollery {
       this.container = container;
     }
 
-    const { threshold } = config;
+    const { threshold, root, rootMargin } = config;
     const observerOptions: IntersectionObserverInit = {
-      threshold
+      threshold,
+      root,
+      rootMargin
     };
 
     this.observer = Observer.createObserver(
