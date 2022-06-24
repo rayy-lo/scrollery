@@ -3,8 +3,8 @@ import Scrollery from '../scrollery/scrollery';
 import ScrolleryConfig from '../types/config';
 
 class ScrolleryBuilder {
-  private container: Element | null;
-  private config: ScrolleryConfig = {
+  private static container: Element | null;
+  private static config: ScrolleryConfig = {
     path: '',
     threshold: 0,
     rootMargin: '0px 0px 0px 0px',
@@ -14,31 +14,7 @@ class ScrolleryBuilder {
     onReady: () => {}
   };
 
-  constructor(container: string, config: ScrolleryConfig);
-  constructor(container: Element, config: ScrolleryConfig);
-  constructor(container: string | Element, config: ScrolleryConfig) {
-    this.config = {
-      ...this.config,
-      ...config
-    };
-
-    if (typeof container === 'string') {
-      this.container = document.querySelector(container);
-      if (this.container === null)
-        throw new Error(
-          'Creating Scrollery instance failed. Container element does not exist'
-        );
-    } else {
-      this.container = container;
-    }
-
-    this.validate();
-    this.createObserver();
-  }
-
-  private validate(): void {}
-
-  private createObserver(): void {
+  private static createObserver(): void {
     const { threshold, root, rootMargin } = this.config;
     const observerOptions: IntersectionObserverInit = {
       threshold,
@@ -52,9 +28,43 @@ class ScrolleryBuilder {
     );
   }
 
-  public create(): Scrollery {
-    const scrollery = new Scrollery();
-    this.config.onReady();
+  private static addLoadingElement(): void {
+    const loadingElement: Element = document.createElement('div');
+    loadingElement.classList.add('scrollery-spinner');
+
+    this.container?.appendChild(loadingElement);
+  }
+
+  public static create(container: string, config: ScrolleryConfig): Scrollery;
+  public static create(container: Element, config: ScrolleryConfig): Scrollery;
+  public static create(
+    container: string | Element,
+    config: ScrolleryConfig
+  ): Scrollery {
+    if (!Object.prototype.hasOwnProperty.call(config, 'path')) {
+      throw new Error('Path property required in config');
+    }
+
+    if (typeof container === 'string') {
+      this.container = document.querySelector(container);
+      if (this.container === null)
+        throw new Error(
+          'Creating Scrollery instance failed. Container element does not exist'
+        );
+    } else {
+      this.container = container;
+    }
+
+    this.config = {
+      ...this.config,
+      ...config
+    };
+
+    this.createObserver();
+    this.addLoadingElement();
+
+    const scrollery = new Scrollery(this.config.path);
+
     return scrollery;
   }
 }
