@@ -13,11 +13,6 @@ export default interface ScrolleryConfig extends IntersectionObserverInit {
    */
   checkLastPage: boolean;
   /**
-   * Intersection observer option properties
-   */
-  threshold: number | number[];
-  rootMargin: string;
-  /**
    * Display spinner when loading next page content
    */
   showSpinner: boolean;
