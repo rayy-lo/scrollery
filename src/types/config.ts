@@ -16,4 +16,8 @@ export default interface ScrolleryConfig extends IntersectionObserverInit {
    * Display spinner when loading next page content
    */
   showSpinner: boolean;
+  /**
+   * Callback function when Scrollery is initialized
+   */
+  onInit: () => void;
 }
