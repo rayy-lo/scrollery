@@ -1,31 +1,44 @@
-import Observer from '../observer/observer';
 import Scrollery from '../scrollery/scrollery';
 import ScrolleryConfig from '../types/config';
 
 class ScrolleryBuilder {
+  private static scrollery: Scrollery;
+  private static observer: IntersectionObserver;
   private static container: Element | null;
   private static config: ScrolleryConfig = {
     path: '',
+    content: '',
     threshold: 0,
-    rootMargin: '0px 0px 0px 0px',
+    rootMargin: '200px',
     root: null,
     checkLastPage: true,
+    showSpinner: true,
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    onReady: () => {}
+    onInit: () => {}
   };
 
   private static createObserver(): void {
     const { threshold, root, rootMargin } = this.config;
-    const observerOptions: IntersectionObserverInit = {
+    const options: IntersectionObserverInit = {
       threshold,
       root,
       rootMargin
     };
 
-    Observer.createObserver(
-      this.container?.lastElementChild as Element,
-      observerOptions
-    );
+    const observerCallback = (
+      entries: IntersectionObserverEntry[],
+      observer: IntersectionObserver
+    ) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        console.log(entry, observer);
+        this.scrollery.loadNextPage();
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, options);
+
+    this.observer = observer;
   }
 
   private static addLoadingElement(): void {
@@ -41,8 +54,11 @@ class ScrolleryBuilder {
     container: string | Element,
     config: ScrolleryConfig
   ): Scrollery {
-    if (!Object.prototype.hasOwnProperty.call(config, 'path')) {
-      throw new Error('Path property required in config');
+    if (
+      !Object.prototype.hasOwnProperty.call(config, 'path') ||
+      !Object.prototype.hasOwnProperty.call(config, 'content')
+    ) {
+      throw new Error('Path or content missing in config');
     }
 
     if (typeof container === 'string') {
@@ -60,10 +76,11 @@ class ScrolleryBuilder {
       ...config
     };
 
+    const scrollery = new Scrollery(this.config);
+    this.scrollery = scrollery;
+
     this.createObserver();
     this.addLoadingElement();
-
-    const scrollery = new Scrollery(this.config.path);
 
     return scrollery;
   }
