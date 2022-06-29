@@ -1,14 +1,26 @@
-class Scrollery {
-  private path: string;
-  private static hasNextPage = true;
+import ScrolleryConfig from '../types/config';
 
-  constructor(path: string) {
-    this.path = path;
+class Scrollery {
+  public readonly config: ScrolleryConfig;
+
+  constructor(config: ScrolleryConfig) {
+    this.config = config;
+
+    config.onInit();
   }
 
-  public static loadNextPage() {
-    if (!this.hasNextPage) return;
-    console.log('Load next page content');
+  onLoad?: () => void;
+
+  public loadNextPage() {
+    console.log('load next page');
+
+    if (this.onLoad) {
+      this.onLoad();
+    }
+  }
+
+  public on?(event: string, eventHandler: () => void): void {
+    if (event === 'load') this.onLoad = eventHandler;
   }
 }
 
