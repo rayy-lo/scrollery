@@ -1,5 +1,6 @@
 import Scrollery from '../scrollery/scrollery';
 import ScrolleryConfig from '../types/config';
+import IScrollery from '../types/scrollery';
 
 class ScrolleryBuilder {
   private static scrollery: Scrollery;
@@ -39,6 +40,8 @@ class ScrolleryBuilder {
     const observer = new IntersectionObserver(observerCallback, options);
 
     this.observer = observer;
+
+    observer.observe(this.container?.lastElementChild as Element);
   }
 
   private static addLoadingElement(): void {
@@ -76,7 +79,7 @@ class ScrolleryBuilder {
       ...config
     };
 
-    const scrollery = new Scrollery(this.config);
+    const scrollery: IScrollery = new Scrollery(this.config);
     this.scrollery = scrollery;
 
     this.createObserver();
