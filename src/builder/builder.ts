@@ -1,6 +1,5 @@
 import Scrollery from '../scrollery/scrollery';
 import ScrolleryConfig from '../types/config';
-import IScrollery from '../types/scrollery';
 
 class ScrolleryBuilder {
   private static scrollery: Scrollery;
@@ -15,7 +14,7 @@ class ScrolleryBuilder {
     checkLastPage: true,
     showSpinner: true,
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    onInit: () => {}
+    onReady: () => {}
   };
 
   private static createObserver(): void {
@@ -79,12 +78,13 @@ class ScrolleryBuilder {
       ...config
     };
 
-    const scrollery: IScrollery = new Scrollery(this.config);
+    const scrollery: Scrollery = new Scrollery(this.config);
     this.scrollery = scrollery;
 
     this.createObserver();
     this.addLoadingElement();
 
+    this.config.onReady();
     return scrollery;
   }
 }
