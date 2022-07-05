@@ -1,26 +1,36 @@
 import ScrolleryConfig from '../types/config';
+import { IScrollery, EventMap } from '../types/scrollery';
 
-class Scrollery {
+class Scrollery implements IScrollery {
   public readonly config: ScrolleryConfig;
+  handlers: EventMap = {};
 
   constructor(config: ScrolleryConfig) {
     this.config = config;
-
-    config.onInit();
+    //TODO: Freeze config object
   }
 
-  onLoad?: () => void;
-
   public loadNextPage() {
-    console.log('load next page');
+    //TODO: Implement
 
-    if (this.onLoad) {
-      this.onLoad();
+    this.trigger('load');
+  }
+
+  public on?(
+    event: 'load' | 'last' | 'insert',
+    eventHandler: () => void
+  ): void {
+    if (event === 'load') {
+      this.handlers['load'] = eventHandler;
     }
   }
 
-  public on?(event: string, eventHandler: () => void): void {
-    if (event === 'load') this.onLoad = eventHandler;
+  public off?(event: string): void {
+    //TODO: remove event handler for event
+  }
+
+  trigger(event: keyof EventMap): void {
+    this.handlers[event]?.();
   }
 }
 
