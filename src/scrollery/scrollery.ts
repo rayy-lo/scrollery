@@ -24,8 +24,11 @@ class Scrollery implements IScrollery {
     }
   }
 
-  public off?(event: string): void {
-    //TODO: remove event handler for event
+  public off?(event: keyof EventMap): Error | void {
+    if (!Object.prototype.hasOwnProperty.call(this.handlers, event))
+      throw new Error(`No handler exists for '${event}' event`);
+
+    delete this.handlers[event];
   }
 
   trigger(event: keyof EventMap): void {
