@@ -6,8 +6,7 @@ class Scrollery implements IScrollery {
   handlers: EventMap = {};
 
   constructor(config: ScrolleryConfig) {
-    this.config = config;
-    //TODO: Freeze config object
+    this.config = Object.freeze(config);
   }
 
   public loadNextPage() {
