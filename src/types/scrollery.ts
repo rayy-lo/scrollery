@@ -1,7 +1,18 @@
 import ScrolleryConfig from './config';
-export default interface IScrollery {
+
+type ScrolleryEvents = 'load' | 'last' | 'insert';
+
+export interface EventMap {
+  load?: () => void;
+  last?: () => void;
+  insert?: () => void;
+}
+
+export interface IScrollery {
   config: ScrolleryConfig;
-  onLoad?: () => void;
+  handlers: EventMap;
   loadNextPage: () => void;
-  on?: (event: string, eventHandler: () => void) => void;
+  on?: (event: ScrolleryEvents, eventHandler: () => void) => void;
+  off?: (event: ScrolleryEvents) => void;
+  trigger: (event: ScrolleryEvents) => void;
 }
