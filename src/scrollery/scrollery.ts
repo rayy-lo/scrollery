@@ -1,5 +1,5 @@
 import ScrolleryConfig from '../types/config';
-import { IScrollery, EventMap } from '../types/scrollery';
+import { IScrollery, EventMap, ScrolleryEvents } from '../types/scrollery';
 
 class Scrollery implements IScrollery {
   public readonly config: ScrolleryConfig;
@@ -16,7 +16,7 @@ class Scrollery implements IScrollery {
   }
 
   public on?(
-    event: 'load' | 'last' | 'insert',
+    event: ScrolleryEvents,
     eventHandler: () => void
   ): void {
     if (event === 'load') {
@@ -24,14 +24,14 @@ class Scrollery implements IScrollery {
     }
   }
 
-  public off?(event: keyof EventMap): Error | void {
+  public off?(event: ScrolleryEvents): Error | void {
     if (!Object.prototype.hasOwnProperty.call(this.handlers, event))
       throw new Error(`No handler exists for '${event}' event`);
 
     delete this.handlers[event];
   }
 
-  trigger(event: keyof EventMap): void {
+  trigger(event: ScrolleryEvents): void {
     this.handlers[event]?.();
   }
 }
