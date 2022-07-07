@@ -1,6 +1,6 @@
 import ScrolleryConfig from './config';
 
-type ScrolleryEvents = 'load' | 'last' | 'insert';
+export type ScrolleryEvents = 'load' | 'last' | 'insert';
 
 export interface EventMap {
   load?: () => void;
