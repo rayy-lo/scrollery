@@ -7,11 +7,19 @@ class ScrolleryBuilder {
   private static container: Element | null;
   private static config: ScrolleryConfig = {
     path: '',
-    content: '',
+    content: '.grid__item',
     threshold: 0,
     rootMargin: '200px',
     root: null,
     checkLastPage: true,
+    fetchOptions: {
+      mode: 'cors',
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'text/html'
+      }
+    },
     showSpinner: true,
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     onReady: () => {}
@@ -31,7 +39,6 @@ class ScrolleryBuilder {
     ) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-        console.log(entry, observer);
         this.scrollery.loadNextPage();
       });
     };
