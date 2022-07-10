@@ -5,6 +5,7 @@ class Scrollery implements IScrollery {
   public readonly config: ScrolleryConfig;
   handlers: EventMap = {};
   pagination_number = 2;
+  events: Array<ScrolleryEvents> = ['load', 'last', 'insert'];
 
   constructor(config: ScrolleryConfig) {
     this.config = Object.freeze(config);
@@ -37,9 +38,9 @@ class Scrollery implements IScrollery {
   }
 
   public on?(event: ScrolleryEvents, eventHandler: () => void): void {
-    if (event === 'load') {
-      this.handlers['load'] = eventHandler;
-    }
+    if (!this.events.includes(event))
+      throw new Error(`${event} is not a possible Scrollery event`);
+    this.handlers['load'] = eventHandler;
   }
 
   public off?(event: ScrolleryEvents): Error | void {
