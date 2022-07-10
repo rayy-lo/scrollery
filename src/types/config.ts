@@ -17,6 +17,10 @@ export default interface ScrolleryConfig extends IntersectionObserverInit {
    */
   showSpinner: boolean;
   /**
+   * Fetch options for fetch request
+   */
+  fetchOptions: RequestInit;
+  /**
    * Callback function when Scrollery is initialized
    */
   onReady: () => void;
