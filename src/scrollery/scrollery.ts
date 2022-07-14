@@ -3,12 +3,14 @@ import { IScrollery, EventMap, ScrolleryEvents } from '../types/scrollery';
 
 class Scrollery implements IScrollery {
   public readonly config: ScrolleryConfig;
+  public container: Element;
   handlers: EventMap = {};
   pagination_number = 2;
   events: Array<ScrolleryEvents> = ['load', 'last', 'insert'];
 
-  constructor(config: ScrolleryConfig) {
+  constructor(container: Element, config: ScrolleryConfig) {
     this.config = Object.freeze(config);
+    this.container = container;
   }
 
   fetchNextPageContent() {
@@ -31,10 +33,30 @@ class Scrollery implements IScrollery {
       });
   }
 
+  parseHtmlText(content: string): NodeListOf<Element> {
+    const htmlContent = new DOMParser()
+      .parseFromString(content, 'text/html')
+      .querySelectorAll(this.config.content);
+    return htmlContent;
+  }
+
+  insertElements(elements: NodeListOf<Element>) {
+    if (elements.length === 0) return;
+
+    elements.forEach((node) => {
+      this.container.appendChild(node);
+    });
+  }
+
   public async loadNextPage() {
-    const nextContent = await this.fetchNextPageContent();
-    console.log(nextContent);
-    this.trigger('load');
+    try {
+      const nextContent = await this.fetchNextPageContent();
+      const nodeList = this.parseHtmlText(nextContent);
+      this.insertElements(nodeList);
+      this.trigger('load');
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   public on?(event: ScrolleryEvents, eventHandler: () => void): void {
