@@ -3,7 +3,6 @@ import ScrolleryConfig from '../types/config';
 
 class ScrolleryBuilder {
   private static scrollery: Scrollery;
-  private static observer: IntersectionObserver;
   private static container: Element | null;
   private static config: ScrolleryConfig = {
     path: '',
@@ -45,8 +44,6 @@ class ScrolleryBuilder {
 
     const observer = new IntersectionObserver(observerCallback, options);
 
-    this.observer = observer;
-
     observer.observe(this.container?.lastElementChild as Element);
   }
 
@@ -85,7 +82,7 @@ class ScrolleryBuilder {
       ...config
     };
 
-    const scrollery: Scrollery = new Scrollery(this.config);
+    const scrollery: Scrollery = new Scrollery(this.container, this.config);
     this.scrollery = scrollery;
 
     this.createObserver();
