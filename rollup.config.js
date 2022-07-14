@@ -1,6 +1,7 @@
 import typescript from '@rollup/plugin-typescript';
 import dotenv from 'dotenv';
 import serve from 'rollup-plugin-serve';
+import svg from 'rollup-plugin-svg-import';
 import { terser } from 'rollup-plugin-terser';
 
 dotenv.config();
@@ -13,7 +14,7 @@ export default [
     input: 'src/index.ts',
     output: {
       name: 'Scrollery',
-      dir: 'dist',
+      dir: 'dist/assets',
       format: 'iife',
       sourcemap: isProduction ? false : true
     },
@@ -21,8 +22,12 @@ export default [
       typescript({
         tsconfig: './tsconfig.json'
       }),
+      svg({
+        // process SVG to DOM Node or String. Default: false
+        stringify: false
+      }),
       isProduction ? terser() : null,
-      serve('dist')
+      serve('dist/assets')
     ]
   }
 ];
