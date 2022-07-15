@@ -1,3 +1,3 @@
-import ScrolleryBuilder from './builder/builder';
+import ScrolleryBuilder from './builder';
 
 export default ScrolleryBuilder;

@@ -1,5 +1,5 @@
-import ScrolleryConfig from '../types/config';
-import { IScrollery, EventMap, ScrolleryEvents } from '../types/scrollery';
+import ScrolleryConfig from './types/config';
+import { IScrollery, EventMap, ScrolleryEvents } from './types/scrollery';
 
 class Scrollery implements IScrollery {
   public readonly config: ScrolleryConfig;

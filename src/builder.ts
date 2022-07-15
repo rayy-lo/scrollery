@@ -1,5 +1,5 @@
-import Scrollery from '../scrollery/scrollery';
-import ScrolleryConfig from '../types/config';
+import Scrollery from './scrollery';
+import ScrolleryConfig from './types/config';
 
 class ScrolleryBuilder {
   private static scrollery: Scrollery;
