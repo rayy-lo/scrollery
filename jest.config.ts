@@ -6,6 +6,11 @@ const config: Config.InitialOptions = {
   testEnvironment: './test/env/test-env.ts',
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest'
+  },
+  globals: {
+    'ts-jest': {
+      isolatedModules: true
+    }
   }
 };
 export default config;
