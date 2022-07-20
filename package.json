@@ -5,7 +5,7 @@
   "author": "Raymond Lo",
   "license": "MIT",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watch",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "watch": "rollup --config --watch",
     "build": "rollup --config"
