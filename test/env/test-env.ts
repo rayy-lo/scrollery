@@ -10,10 +10,17 @@ class CustomEnvironment extends NodeEnvironment {
 
   async setup() {
     await super.setup();
+    const options = {
+      path: 'page',
+      content: '.grid__item',
+      threshold: 1
+    };
     const html = fs.readFileSync('./test/env/index.html', 'utf-8');
     const { window } = new JSDOM(html);
 
     this.global.page = window;
+    this.global.containerSelector = '#product-grid';
+    this.global.config = options;
   }
 
   async teardown() {
