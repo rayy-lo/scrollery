@@ -2,15 +2,35 @@
  * @jest-environment ./test/env/test-env.ts
  */
 
-// import Scrollery from '../src/scrollery';
+import Scrollery from '../src/scrollery';
+
+let window;
+let scrollery;
+let container;
+
+beforeAll(() => {
+  window = globalThis.page;
+  container = window.document.querySelector(globalThis.containerSelector);
+  scrollery = new Scrollery(container, globalThis.config);
+});
 
 describe('Scrollery', () => {
-  const window = globalThis.page;
+  describe('Events', () => {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const eventCallback = () => {};
+    it('should attach a callback fn for the load event', () => {
+      scrollery.on?.('load', eventCallback);
 
-  test('h2 exists', () => {
-    expect(window.document.querySelector('h2')?.textContent).toBe(
-      'Hello there'
-    );
+      expect(scrollery.handlers).toHaveProperty('load', eventCallback);
+    });
+
+    it('should throw an error for non-event strings', () => {
+      expect(() => {
+        scrollery
+          .on('fake event', eventCallback)
+          .toThrow(/not a possible Scrollery event/);
+      });
+    });
   });
 });
 ``;
