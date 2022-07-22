@@ -33,10 +33,10 @@ class Scrollery implements IScrollery {
       });
   }
 
-  parseHtmlText(content: string): NodeListOf<Element> {
+  parseHtmlText(content: string, selector: string): NodeListOf<Element> {
     const htmlContent = new DOMParser()
       .parseFromString(content, 'text/html')
-      .querySelectorAll(this.config.content);
+      .querySelectorAll(selector);
     return htmlContent;
   }
 
@@ -51,7 +51,7 @@ class Scrollery implements IScrollery {
   public async loadNextPage() {
     try {
       const nextContent = await this.fetchNextPageContent();
-      const nodeList = this.parseHtmlText(nextContent);
+      const nodeList = this.parseHtmlText(nextContent, this.config.content);
       this.insertElements(nodeList);
       this.trigger('load');
     } catch (err) {
