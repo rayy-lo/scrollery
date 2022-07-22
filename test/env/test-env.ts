@@ -18,7 +18,7 @@ class CustomEnvironment extends NodeEnvironment {
     const html = fs.readFileSync('./test/env/index.html', 'utf-8');
     const { window } = new JSDOM(html);
 
-    this.global.page = window;
+    this.global.window = window as any;
     this.global.containerSelector = '#product-grid';
     this.global.config = options;
   }
