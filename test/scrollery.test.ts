@@ -9,7 +9,7 @@ let scrollery;
 let container;
 
 beforeAll(() => {
-  window = globalThis.page;
+  window = globalThis.window;
   container = window.document.querySelector(globalThis.containerSelector);
   scrollery = new Scrollery(container, globalThis.config);
 });
