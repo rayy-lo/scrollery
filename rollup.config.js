@@ -1,8 +1,8 @@
 import typescript from '@rollup/plugin-typescript';
 import dotenv from 'dotenv';
 import serve from 'rollup-plugin-serve';
-import svg from 'rollup-plugin-svg-import';
 import { terser } from 'rollup-plugin-terser';
+import InlineSvg from 'rollup-plugin-inline-svg';
 
 dotenv.config();
 
@@ -22,10 +22,7 @@ export default [
       typescript({
         tsconfig: './tsconfig.json'
       }),
-      svg({
-        // process SVG to DOM Node or String. Default: false
-        stringify: false
-      }),
+      InlineSvg(),
       isProduction ? terser() : null,
       serve('dist/assets')
     ]
