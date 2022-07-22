@@ -48,7 +48,7 @@ class ScrolleryBuilder {
   }
 
   private static addLoadingElement(): void {
-    const loadingElement: Element = document.createElement('div');
+    const loadingElement: Element = window.document.createElement('div');
     loadingElement.classList.add('scrollery-spinner');
 
     this.container?.appendChild(loadingElement);
@@ -68,7 +68,7 @@ class ScrolleryBuilder {
     }
 
     if (typeof container === 'string') {
-      this.container = document.querySelector(container);
+      this.container = window.document.querySelector(container);
       if (this.container === null)
         throw new Error(
           'Creating Scrollery instance failed. Container element does not exist'
