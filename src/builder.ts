@@ -57,10 +57,7 @@ class ScrolleryBuilder {
       this.config.content.substring(1)
     );
 
-    loadingElement.insertAdjacentHTML(
-      'beforeend',
-      spinner as unknown as string
-    );
+    loadingElement.insertAdjacentHTML('beforeend', spinner);
 
     this.container?.appendChild(loadingElement);
   }
