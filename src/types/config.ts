@@ -28,5 +28,5 @@ export default interface ScrolleryConfig extends IntersectionObserverInit {
   /**
    * Callback function when Scrollery is initialized
    */
-  onReady: () => void;
+  onReady(): void;
 }

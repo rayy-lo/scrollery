@@ -9,13 +9,13 @@ export interface EventHandlers {
 }
 
 export interface EventSystem {
-  on?: (event: ScrolleryEvents, eventHandler: () => void) => void;
-  off?: (event: ScrolleryEvents) => void;
-  trigger: (event: ScrolleryEvents) => void;
+  on(event: ScrolleryEvents, eventHandler: () => void): void;
+  off(event: ScrolleryEvents): void;
+  trigger(event: ScrolleryEvents): void;
 }
 
 export interface IScrollery {
   config: ScrolleryConfig;
   handlers: EventHandlers;
-  loadNextPage: () => void;
+  loadNextPage(): void;
 }
