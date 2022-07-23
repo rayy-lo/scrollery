@@ -52,3 +52,17 @@ describe('Scrollery Event System', () => {
     expect(scrollery.handlers).not.toHaveProperty('load');
   });
 });
+
+describe('Scrollery Load Content', () => {
+  it('should parse string into HTML and return list of desired Elements ', () => {
+    const htmlString =
+      '<main><div class="grid__item">First</div><div class="grid__item">Second</div></main>';
+
+    const selectedDOMNodes = scrollery.parseHtmlText(
+      htmlString,
+      scrollery.config.content
+    );
+
+    expect(selectedDOMNodes).toHaveLength(2);
+  });
+});
