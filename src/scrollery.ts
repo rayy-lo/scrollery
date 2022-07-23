@@ -1,10 +1,15 @@
 import ScrolleryConfig from './types/config';
-import { IScrollery, EventMap, ScrolleryEvents } from './types/scrollery';
+import {
+  IScrollery,
+  EventHandlers,
+  ScrolleryEvents,
+  EventSystem
+} from './types/scrollery';
 
-class Scrollery implements IScrollery {
+class Scrollery implements IScrollery, EventSystem {
   public readonly config: ScrolleryConfig;
   public container: Element;
-  handlers: EventMap = {};
+  handlers: EventHandlers = {};
   pagination_number = 2;
   events: Array<ScrolleryEvents> = ['load', 'last', 'insert'];
 
