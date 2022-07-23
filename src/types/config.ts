@@ -1,3 +1,8 @@
+interface spinnerConfig {
+  showSpinner: boolean;
+  color: string;
+}
+
 export default interface ScrolleryConfig extends IntersectionObserverInit {
   /**
    * Query string to get next page
@@ -15,7 +20,7 @@ export default interface ScrolleryConfig extends IntersectionObserverInit {
   /**
    * Display spinner when loading next page content
    */
-  showSpinner: boolean;
+  spinner: spinnerConfig;
   /**
    * Fetch options for fetch request
    */
