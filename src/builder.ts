@@ -1,6 +1,6 @@
 import Scrollery from './scrollery';
 import ScrolleryConfig from './types/config';
-
+import spinner from './assets/three-dots.svg';
 class ScrolleryBuilder {
   private static scrollery: Scrollery;
   private static container: Element | null;
@@ -19,7 +19,10 @@ class ScrolleryBuilder {
         'Content-Type': 'text/html'
       }
     },
-    showSpinner: true,
+    spinner: {
+      showSpinner: true,
+      color: '#000'
+    },
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     onReady: () => {}
   };
@@ -49,7 +52,15 @@ class ScrolleryBuilder {
 
   private static addLoadingElement(): void {
     const loadingElement: Element = window.document.createElement('div');
-    loadingElement.classList.add('scrollery-spinner');
+    loadingElement.classList.add(
+      'scrollery-loading-wrapper',
+      this.config.content.substring(1)
+    );
+
+    loadingElement.insertAdjacentHTML(
+      'beforeend',
+      spinner as unknown as string
+    );
 
     this.container?.appendChild(loadingElement);
   }
@@ -85,8 +96,8 @@ class ScrolleryBuilder {
     const scrollery: Scrollery = new Scrollery(this.container, this.config);
     this.scrollery = scrollery;
 
-    this.createObserver();
     this.addLoadingElement();
+    this.createObserver();
 
     this.config.onReady();
     return scrollery;

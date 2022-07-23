@@ -34,7 +34,7 @@ class Scrollery implements IScrollery {
   }
 
   parseHtmlText(content: string, selector: string): NodeListOf<Element> {
-    const htmlContent = new DOMParser()
+    const htmlContent = new window.DOMParser()
       .parseFromString(content, 'text/html')
       .querySelectorAll(selector);
     return htmlContent;
@@ -44,7 +44,9 @@ class Scrollery implements IScrollery {
     if (elements.length === 0) return;
 
     elements.forEach((node) => {
-      this.container.appendChild(node);
+      this.container
+        .querySelector('.scrollery-loading-wrapper')
+        ?.insertAdjacentElement('beforebegin', node);
     });
   }
 
