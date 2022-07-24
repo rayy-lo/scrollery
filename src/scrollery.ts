@@ -6,19 +6,19 @@ import {
   EventSystem
 } from './types/scrollery';
 
-class Scrollery implements IScrollery, EventSystem {
-  public readonly config: ScrolleryConfig;
-  public container: Element;
-  handlers: EventHandlers = {};
-  pagination_number = 2;
-  events: Array<ScrolleryEvents> = ['load', 'last', 'insert'];
+class Scrollery implements EventSystem, IScrollery {
+  private config: ScrolleryConfig;
+  private container: Element;
+  private handlers: EventHandlers = {};
+  private pagination_number = 2;
+  private events: Array<ScrolleryEvents> = ['load', 'last', 'insert'];
 
   constructor(container: Element, config: ScrolleryConfig) {
     this.config = Object.freeze(config);
     this.container = container;
   }
 
-  fetchNextPageContent() {
+  private fetchNextPageContent() {
     /**
      * TODO: Ability to fetch to different origins
      */
@@ -38,14 +38,17 @@ class Scrollery implements IScrollery, EventSystem {
       });
   }
 
-  parseHtmlText(content: string, selector: string): NodeListOf<Element> {
+  private parseHtmlText(
+    content: string,
+    selector: string
+  ): NodeListOf<Element> {
     const htmlContent = new window.DOMParser()
       .parseFromString(content, 'text/html')
       .querySelectorAll(selector);
     return htmlContent;
   }
 
-  insertElements(elements: NodeListOf<Element>) {
+  private insertElements(elements: NodeListOf<Element>) {
     if (elements.length === 0) return;
 
     elements.forEach((node) => {
@@ -66,20 +69,20 @@ class Scrollery implements IScrollery, EventSystem {
     }
   }
 
-  public on?(event: ScrolleryEvents, eventHandler: () => void): void {
+  public on(event: ScrolleryEvents, eventHandler: () => void): void {
     if (!this.events.includes(event))
       throw new Error(`${event} is not a possible Scrollery event`);
     this.handlers['load'] = eventHandler;
   }
 
-  public off?(event: ScrolleryEvents): Error | void {
+  public off(event: ScrolleryEvents): Error | void {
     if (!Object.prototype.hasOwnProperty.call(this.handlers, event))
       throw new Error(`No handler exists for '${event}' event`);
 
     delete this.handlers[event];
   }
 
-  trigger(event: ScrolleryEvents): void {
+  public trigger(event: ScrolleryEvents): void {
     this.handlers[event]?.();
   }
 }
