@@ -1,4 +1,4 @@
-interface spinnerConfig {
+export interface spinnerConfig {
   showSpinner: boolean;
   color: string;
 }

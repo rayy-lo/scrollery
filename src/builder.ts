@@ -1,5 +1,5 @@
 import Scrollery from './scrollery';
-import ScrolleryConfig from './types/config';
+import ScrolleryConfig, { spinnerConfig } from './types/config';
 import spinner from './assets/three-dots.svg';
 class ScrolleryBuilder {
   private static scrollery: Scrollery;
@@ -21,7 +21,7 @@ class ScrolleryBuilder {
     },
     spinner: {
       showSpinner: true,
-      color: '#000'
+      color: '#000000'
     },
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     onReady: () => {}
@@ -52,12 +52,35 @@ class ScrolleryBuilder {
 
   private static addLoadingElement(): void {
     const loadingElement: Element = window.document.createElement('div');
+
+    function applySpinnerConfig(
+      spinner: string,
+      spinnerConfig: spinnerConfig
+    ): Element {
+      const parser = new DOMParser();
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const spinnerElement = parser
+        .parseFromString(spinner, 'text/html')
+        .querySelector('svg')!;
+
+      spinnerElement?.setAttribute('fill', spinnerConfig.color);
+
+      if (!spinnerConfig.showSpinner) {
+        spinnerElement.style.display = 'none';
+      }
+
+      return spinnerElement;
+    }
+
     loadingElement.classList.add(
       'scrollery-loading-wrapper',
       this.config.content.substring(1)
     );
 
-    loadingElement.insertAdjacentHTML('beforeend', spinner);
+    loadingElement.insertAdjacentElement(
+      'beforeend',
+      applySpinnerConfig(spinner, this.config.spinner)
+    );
 
     this.container?.appendChild(loadingElement);
   }
