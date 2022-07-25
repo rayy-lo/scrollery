@@ -53,7 +53,7 @@ class Scrollery implements EventSystem, IScrollery {
 
     elements.forEach((node) => {
       this.container
-        .querySelector('.scrollery-loading-wrapper')
+        .querySelector('.scrollery-spinner-wrapper')
         ?.insertAdjacentElement('beforebegin', node);
     });
   }

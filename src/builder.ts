@@ -63,25 +63,23 @@ class ScrolleryBuilder {
         .parseFromString(spinner, 'text/html')
         .querySelector('svg')!;
 
-      spinnerElement?.setAttribute('fill', spinnerConfig.color);
+      spinnerElement.setAttribute('fill', spinnerConfig.color);
 
       if (!spinnerConfig.showSpinner) {
-        spinnerElement.style.display = 'none';
+        spinnerElement.setAttribute('style', 'display: none;');
       }
 
       return spinnerElement;
     }
 
-    loadingElement.classList.add(
-      'scrollery-loading-wrapper',
-      this.config.content.substring(1)
-    );
+    loadingElement.classList.add('scrollery-spinner-wrapper');
 
     loadingElement.insertAdjacentElement(
       'beforeend',
       applySpinnerConfig(spinner, this.config.spinner)
     );
 
+    this.container?.classList.add('scrollery-container');
     this.container?.appendChild(loadingElement);
   }
 
