@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import serve from 'rollup-plugin-serve';
 import { terser } from 'rollup-plugin-terser';
 import InlineSvg from 'rollup-plugin-inline-svg';
+import css from 'rollup-plugin-import-css';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ export default [
       sourcemap: isProduction ? false : true
     },
     plugins: [
+      css({ output: 'scrollery.css' }),
       typescript({
         tsconfig: './tsconfig.json'
       }),
