@@ -1,8 +1,22 @@
 {
   "name": "scrollery",
   "version": "1.0.0",
-  "main": "src/main.ts",
-  "author": "Raymond Lo",
+  "browser": "build/scrollery.js",
+  "author": "Raymond Lo <raymondlo109@gmail.com>",
+  "keywords": [
+    "scrollery",
+    "infinite-scrolling",
+    "javascript",
+    "browser",
+    "library"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rayy-lo/scrollery"
+  },
+  "bugs": {
+    "url": "https://github.com/rayy-lo/scrollery/issues"
+  },
   "license": "MIT",
   "scripts": {
     "test": "jest --watch",
