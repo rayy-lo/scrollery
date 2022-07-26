@@ -10,14 +10,14 @@ dotenv.config();
 // eslint-disable-next-line no-undef
 const isProduction = process.env.NODE_ENV === 'production';
 
-export default [
+const development_config = [
   {
     input: 'src/index.ts',
     output: {
       name: 'Scrollery',
-      dir: 'dist/assets',
+      file: 'dist/assets/scrollery.js',
       format: 'iife',
-      sourcemap: isProduction ? false : true
+      sourcemap: true
     },
     plugins: [
       css({ output: 'scrollery.css' }),
@@ -25,8 +25,29 @@ export default [
         tsconfig: './tsconfig.json'
       }),
       InlineSvg(),
-      isProduction ? terser() : null,
       serve('dist/assets')
     ]
   }
 ];
+
+const production_config = [
+  {
+    input: 'src/index.ts',
+    output: {
+      name: 'Scrollery',
+      file: 'build/scrollery.min.js',
+      format: 'iife',
+      sourcemap: false
+    },
+    plugins: [
+      css({ output: 'scrollery.min.css', minify: true }),
+      typescript({
+        tsconfig: './tsconfig.json'
+      }),
+      InlineSvg(),
+      terser()
+    ]
+  }
+];
+
+export default isProduction ? production_config : development_config;
