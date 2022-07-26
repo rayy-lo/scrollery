@@ -8,7 +8,11 @@
     "infinite-scrolling",
     "javascript",
     "browser",
-    "library"
+    "library",
+    "intersection-observer"
+  ],
+  "files": [
+    "dist"
   ],
   "repository": {
     "type": "git",
