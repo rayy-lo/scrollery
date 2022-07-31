@@ -37,6 +37,7 @@ class ScrolleryBuilder {
 
     const observerCallback = (
       entries: IntersectionObserverEntry[],
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       observer: IntersectionObserver
     ) => {
       entries.forEach((entry) => {
