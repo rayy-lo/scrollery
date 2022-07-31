@@ -57,7 +57,7 @@ class ScrolleryBuilder {
       spinner: string,
       spinnerConfig: spinnerConfig
     ): Element {
-      const parser = new DOMParser();
+      const parser = new window.DOMParser();
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const spinnerElement = parser
         .parseFromString(spinner, 'text/html')
