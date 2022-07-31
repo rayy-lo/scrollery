@@ -23,10 +23,12 @@
   },
   "license": "MIT",
   "scripts": {
-    "test": "jest --watch",
+    "test": "jest",
+    "format": "prettier -w {src,test}",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
     "watch": "rollup --config --watch",
-    "build": "rollup --config --environment NODE_ENV:production"
+    "build": "rollup --config --environment NODE_ENV:production",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.3.2",
