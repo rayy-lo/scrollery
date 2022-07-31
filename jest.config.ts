@@ -5,7 +5,8 @@ const config: Config.InitialOptions = {
   verbose: true,
   testEnvironment: './test/env/test-env.ts',
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest'
+    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '\\.svg$': './test/fileTransformer.ts'
   },
   globals: {
     'ts-jest': {
