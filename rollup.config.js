@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import serve from 'rollup-plugin-serve';
 import { terser } from 'rollup-plugin-terser';
 import InlineSvg from 'rollup-plugin-inline-svg';
-import css from 'rollup-plugin-import-css';
 
 dotenv.config();
 
@@ -15,17 +14,16 @@ const development_config = [
     input: 'src/index.ts',
     output: {
       name: 'Scrollery',
-      file: 'dist/assets/scrollery.js',
+      file: 'client/assets/scrollery.js',
       format: 'iife',
       sourcemap: true
     },
     plugins: [
-      css({ output: 'scrollery.css' }),
       typescript({
         tsconfig: './tsconfig.json'
       }),
       InlineSvg(),
-      serve('dist/assets')
+      serve('client/assets')
     ]
   }
 ];
@@ -35,12 +33,11 @@ const production_config = [
     input: 'src/index.ts',
     output: {
       name: 'Scrollery',
-      file: 'build/scrollery.min.js',
+      file: 'dist/scrollery.min.js',
       format: 'iife',
       sourcemap: false
     },
     plugins: [
-      css({ output: 'scrollery.min.css', minify: true }),
       typescript({
         tsconfig: './tsconfig.json'
       }),
