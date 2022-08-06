@@ -25,9 +25,9 @@
   "scripts": {
     "test": "jest",
     "format": "prettier -w {src,test}",
-    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
-    "watch": "rollup --config --watch",
-    "build": "rollup --config --environment NODE_ENV:production",
+    "lint": "eslint src/ --ext .js,.ts",
+    "watch": "rollup -c -w",
+    "build": "rollup -c",
     "prepare": "husky install"
   },
   "devDependencies": {
