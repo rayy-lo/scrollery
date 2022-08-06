@@ -20,5 +20,5 @@
     "lib": ["ES6", "DOM"]
   },
   "include": ["src/**/*.ts", "src/types/custom.d.ts"],
-  "exclude": ["node_modules", "**/*.test.ts", "client", "dist"]
+  "exclude": ["node_modules", "**/*.test.ts", "development"]
 }
