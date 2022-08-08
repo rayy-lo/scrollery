@@ -20,11 +20,11 @@ const development_config = {
   input: 'src/index.ts',
   output: {
     name: 'Scrollery',
-    file: 'client/assets/scrollery.js',
+    file: 'development/scrollery.js',
     format: 'iife',
     sourcemap: true
   },
-  plugins: [...plugins, serve('client/assets')]
+  plugins: [...plugins, serve('development')]
 };
 
 const production_config = [
