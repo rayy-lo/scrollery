@@ -1,5 +1,5 @@
 import Scrollery from './scrollery';
-import ScrolleryConfig, { spinnerConfig } from './types/config';
+import ScrolleryConfig from './types/config';
 import spinner from './assets/three-dots.svg';
 class ScrolleryBuilder {
   private static scrollery: Scrollery;
@@ -19,12 +19,7 @@ class ScrolleryBuilder {
         'Content-Type': 'text/html'
       }
     },
-    spinner: {
-      showSpinner: true,
-      color: '#000000'
-    },
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    onReady: () => {}
+    spinner: 1
   };
 
   private static createObserver(): void {
@@ -52,36 +47,10 @@ class ScrolleryBuilder {
   }
 
   private static addLoadingElement(): void {
-    const loadingElement: Element = window.document.createElement('div');
-
-    function applySpinnerConfig(
-      spinner: string,
-      spinnerConfig: spinnerConfig
-    ): Element {
-      const parser = new window.DOMParser();
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const spinnerElement = parser
-        .parseFromString(spinner, 'text/html')
-        .querySelector('svg')!;
-
-      spinnerElement.setAttribute('fill', spinnerConfig.color);
-
-      if (!spinnerConfig.showSpinner) {
-        spinnerElement.setAttribute('style', 'display: none;');
-      }
-
-      return spinnerElement;
-    }
-
-    loadingElement.classList.add('scrollery-spinner-wrapper');
-
-    loadingElement.insertAdjacentElement(
-      'beforeend',
-      applySpinnerConfig(spinner, this.config.spinner)
-    );
-
-    this.container?.classList.add('scrollery-container');
-    this.container?.appendChild(loadingElement);
+    const spinnerWrapper = document.createElement('div');
+    spinnerWrapper.classList.add('scrollery-spinner-wrapper');
+    spinnerWrapper.innerHTML = spinner;
+    this.container?.insertAdjacentElement('beforeend', spinnerWrapper);
   }
 
   public static create(container: string, config: ScrolleryConfig): Scrollery;
@@ -118,7 +87,7 @@ class ScrolleryBuilder {
     this.addLoadingElement();
     this.createObserver();
 
-    this.config.onReady();
+    this.config.onInit?.();
     return scrollery;
   }
 }

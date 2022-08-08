@@ -1,15 +1,3 @@
-export interface spinnerConfig {
-  /**
-   * Provide various svg spinners to choose from based on number
-   * TODO: Add more types
-   */
-  type: number;
-  /**
-   * Hexcode to set spinner color
-   */
-  color: string;
-}
-
 export default interface ScrolleryConfig extends IntersectionObserverInit {
   /**
    * Query string to get next page
@@ -25,9 +13,10 @@ export default interface ScrolleryConfig extends IntersectionObserverInit {
    */
   checkLastPage: boolean;
   /**
-   * Display spinner when loading next page content
+   * Different svg spinners to choose from based on number
+   * TODO: Add more types
    */
-  spinner: spinnerConfig;
+  spinner: number;
   /**
    * Fetch options for fetch request
    */
