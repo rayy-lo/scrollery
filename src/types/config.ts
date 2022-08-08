@@ -1,5 +1,12 @@
 export interface spinnerConfig {
-  showSpinner: boolean;
+  /**
+   * Provide various svg spinners to choose from based on number
+   * TODO: Add more types
+   */
+  type: number;
+  /**
+   * Hexcode to set spinner color
+   */
   color: string;
 }
 
@@ -7,7 +14,7 @@ export default interface ScrolleryConfig extends IntersectionObserverInit {
   /**
    * Query string to get next page
    */
-  path: string;
+  path: string | ((pagination_number: number) => string);
   /**
    * Selector to retrieve content to append to container
    * e.g. ".post"
@@ -28,5 +35,5 @@ export default interface ScrolleryConfig extends IntersectionObserverInit {
   /**
    * Callback function when Scrollery is initialized
    */
-  onReady(): void;
+  onInit?(): void;
 }

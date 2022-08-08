@@ -19,16 +19,20 @@ class Scrollery implements EventSystem, IScrollery {
   }
 
   private fetchNextPageContent() {
-    /**
-     * TODO: Ability to fetch to different origins
-     */
-    const fetch_url: string =
-      window.location.origin +
-      window.location.pathname +
-      '?' +
-      this.config.path +
-      '=' +
-      this.pagination_number;
+    let fetch_url;
+
+    if (typeof this.config.path === 'string') {
+      const searchParams = new URLSearchParams(window.location.search);
+
+      searchParams.set(this.config.path, this.pagination_number.toString());
+
+      fetch_url =
+        window.location.origin +
+        window.location.pathname +
+        searchParams.toString();
+    } else {
+      fetch_url = this.config.path(this.pagination_number);
+    }
 
     return fetch(fetch_url, this.config.fetchOptions)
       .then((response) => response.text())
