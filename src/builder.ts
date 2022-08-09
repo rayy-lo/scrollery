@@ -6,7 +6,7 @@ class ScrolleryBuilder {
   private static container: Element | null;
   private static config: ScrolleryConfig = {
     path: '',
-    content: '.grid__item',
+    content: '',
     threshold: 0,
     rootMargin: '200px',
     root: null,
