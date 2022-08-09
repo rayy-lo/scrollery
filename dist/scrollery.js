@@ -35,15 +35,18 @@ var Scrollery = (function () {
             this.container = container;
         }
         fetchNextPageContent() {
-            /**
-             * TODO: Ability to fetch to different origins
-             */
-            const fetch_url = window.location.origin +
-                window.location.pathname +
-                '?' +
-                this.config.path +
-                '=' +
-                this.pagination_number;
+            let fetch_url;
+            if (typeof this.config.path === 'string') {
+                const searchParams = new URLSearchParams(window.location.search);
+                searchParams.set(this.config.path, this.pagination_number.toString());
+                fetch_url =
+                    window.location.origin +
+                        window.location.pathname +
+                        searchParams.toString();
+            }
+            else {
+                fetch_url = this.config.path(this.pagination_number);
+            }
             return fetch(fetch_url, this.config.fetchOptions)
                 .then((response) => response.text())
                 .then((data) => {
@@ -120,10 +123,13 @@ var Scrollery = (function () {
         }
         static addLoadingElement() {
             var _a;
-            console.log('add');
-            (_a = this.container) === null || _a === void 0 ? void 0 : _a.insertAdjacentHTML('beforeend', spinner);
+            const spinnerWrapper = window.document.createElement('div');
+            spinnerWrapper.classList.add('scrollery-spinner-wrapper');
+            spinnerWrapper.innerHTML = spinner;
+            (_a = this.container) === null || _a === void 0 ? void 0 : _a.insertAdjacentElement('beforeend', spinnerWrapper);
         }
         static create(container, config) {
+            var _a, _b;
             if (!Object.prototype.hasOwnProperty.call(config, 'path') ||
                 !Object.prototype.hasOwnProperty.call(config, 'content')) {
                 throw new Error('Path or content missing in config');
@@ -141,13 +147,13 @@ var Scrollery = (function () {
             this.scrollery = scrollery;
             this.addLoadingElement();
             this.createObserver();
-            this.config.onReady();
+            (_b = (_a = this.config).onInit) === null || _b === void 0 ? void 0 : _b.call(_a);
             return scrollery;
         }
     }
     ScrolleryBuilder.config = {
         path: '',
-        content: '.grid__item',
+        content: '',
         threshold: 0,
         rootMargin: '200px',
         root: null,
@@ -160,12 +166,7 @@ var Scrollery = (function () {
                 'Content-Type': 'text/html'
             }
         },
-        spinner: {
-            showSpinner: true,
-            color: '#000000'
-        },
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        onReady: () => { }
+        spinner: 1
     };
 
     return ScrolleryBuilder;
