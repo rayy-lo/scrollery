@@ -87,7 +87,6 @@ class ScrolleryBuilder {
     this.addLoadingElement();
     this.createObserver();
 
-    this.config.onInit?.();
     return scrollery;
   }
 }
