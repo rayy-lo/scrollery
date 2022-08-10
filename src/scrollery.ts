@@ -76,7 +76,7 @@ class Scrollery implements EventSystem, IScrollery {
   public on(event: ScrolleryEvents, eventHandler: () => void): void {
     if (!this.events.includes(event))
       throw new Error(`${event} is not a possible Scrollery event`);
-    this.handlers['load'] = eventHandler;
+    this.handlers[event] = eventHandler;
   }
 
   public off(event: ScrolleryEvents): Error | void {
