@@ -9,10 +9,6 @@ export default interface ScrolleryConfig extends IntersectionObserverInit {
    */
   content: string;
   /**
-   * Whether to check for the last page
-   */
-  checkLastPage: boolean;
-  /**
    * Different svg spinners to choose from based on number
    * TODO: Add more types
    */

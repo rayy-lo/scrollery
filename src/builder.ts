@@ -10,7 +10,6 @@ class ScrolleryBuilder {
     threshold: 0,
     rootMargin: '200px',
     root: null,
-    checkLastPage: true,
     fetchOptions: {},
     spinner: 1
   };
