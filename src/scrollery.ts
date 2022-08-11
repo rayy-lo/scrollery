@@ -12,10 +12,20 @@ class Scrollery implements EventSystem, IScrollery {
   private handlers: EventHandlers = {};
   private pagination_number = 2;
   private events: Array<ScrolleryEvents> = ['load', 'last', 'insert'];
+  private status: 'loading' | 'idle' = 'idle';
 
   constructor(container: Element, config: ScrolleryConfig) {
-    this.config = Object.freeze(config);
+    this.config = config;
     this.container = container;
+  }
+
+  private toggleSpinner() {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const spinnerWrapper = window.document.querySelector<HTMLElement>(
+      '.scrollery-spinner-wrapper'
+    )!;
+
+    spinnerWrapper.style.opacity = this.status === 'loading' ? '1' : '0';
   }
 
   private fetchNextPageContent() {
@@ -60,9 +70,13 @@ class Scrollery implements EventSystem, IScrollery {
         .querySelector('.scrollery-spinner-wrapper')
         ?.insertAdjacentElement('beforebegin', node);
     });
+    this.trigger('insert');
   }
 
   public async loadNextPage() {
+    this.status = 'loading';
+    this.toggleSpinner();
+
     try {
       const nextContent = await this.fetchNextPageContent();
       const nodeList = this.parseHtmlText(nextContent, this.config.content);
@@ -70,6 +84,9 @@ class Scrollery implements EventSystem, IScrollery {
       this.trigger('load');
     } catch (err) {
       console.log(err);
+    } finally {
+      this.status = 'idle';
+      this.toggleSpinner();
     }
   }
 

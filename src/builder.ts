@@ -42,6 +42,7 @@ class ScrolleryBuilder {
     const spinnerWrapper = window.document.createElement('div');
     spinnerWrapper.classList.add('scrollery-spinner-wrapper');
     spinnerWrapper.innerHTML = spinner;
+    spinnerWrapper.style.opacity = '0';
     this.container?.insertAdjacentElement('beforeend', spinnerWrapper);
   }
 
