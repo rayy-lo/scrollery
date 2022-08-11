@@ -11,7 +11,12 @@ class Scrollery implements EventSystem, IScrollery {
   private container: Element;
   private handlers: EventHandlers = {};
   private pagination_number = 2;
-  private events: Array<ScrolleryEvents> = ['load', 'last', 'insert'];
+  private events: Array<ScrolleryEvents> = [
+    'load',
+    'load.json',
+    'last',
+    'insert'
+  ];
   private status: 'loading' | 'idle' = 'idle';
   private is_last_page = false;
 
@@ -45,22 +50,23 @@ class Scrollery implements EventSystem, IScrollery {
       fetch_url = this.config.path(this.pagination_number);
     }
 
-    return fetch(fetch_url, this.config.fetchOptions)
-      .then((response) => {
-        if (response.status === 404) {
-          this.is_last_page = true;
-          this.status = 'idle';
-          this.toggleSpinner();
-          this.trigger('last');
-        }
+    return fetch(fetch_url, this.config.fetchOptions).then((response) => {
+      if (response.status === 404) {
+        this.is_last_page = true;
+        this.status = 'idle';
+        this.toggleSpinner();
+        this.trigger('last');
+      }
 
-        this.trigger('load');
-        return response.text();
-      })
-      .then((data) => {
-        this.pagination_number++;
-        return data;
-      });
+      this.pagination_number++;
+      this.trigger('load');
+
+      if (response.headers.get('Content-Type')?.includes('application/json')) {
+        return response.json();
+      }
+
+      return response.text();
+    });
   }
 
   private parseHtmlText(
@@ -81,9 +87,6 @@ class Scrollery implements EventSystem, IScrollery {
         .querySelector('.scrollery-spinner-wrapper')
         ?.insertAdjacentElement('beforebegin', node);
     });
-    this.trigger('insert');
-    this.status = 'idle';
-    this.toggleSpinner();
   }
 
   public async loadNextPage() {
@@ -93,9 +96,17 @@ class Scrollery implements EventSystem, IScrollery {
     this.toggleSpinner();
 
     const nextContent = await this.fetchNextPageContent();
-    const nodeList = this.parseHtmlText(nextContent, this.config.content);
 
-    this.insertElements(nodeList);
+    if (typeof nextContent === 'string') {
+      const nodeList = this.parseHtmlText(nextContent, this.config.content);
+      this.insertElements(nodeList);
+    } else {
+      this.trigger('load.json', nextContent);
+    }
+
+    this.trigger('insert');
+    this.status = 'idle';
+    this.toggleSpinner();
   }
 
   public on(event: ScrolleryEvents, eventHandler: () => void): void {
@@ -111,8 +122,12 @@ class Scrollery implements EventSystem, IScrollery {
     delete this.handlers[event];
   }
 
-  public trigger(event: ScrolleryEvents): void {
-    this.handlers[event]?.();
+  public trigger(event: ScrolleryEvents, data?: unknown): void {
+    if (event === 'load.json') {
+      this.handlers['load.json']?.(data);
+    } else {
+      this.handlers[event]?.();
+    }
   }
 }
 
