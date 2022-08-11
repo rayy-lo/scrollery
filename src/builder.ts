@@ -11,14 +11,7 @@ class ScrolleryBuilder {
     rootMargin: '200px',
     root: null,
     checkLastPage: true,
-    fetchOptions: {
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'text/html'
-      }
-    },
+    fetchOptions: {},
     spinner: 1
   };
 
