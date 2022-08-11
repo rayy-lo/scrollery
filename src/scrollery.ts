@@ -13,6 +13,7 @@ class Scrollery implements EventSystem, IScrollery {
   private pagination_number = 2;
   private events: Array<ScrolleryEvents> = ['load', 'last', 'insert'];
   private status: 'loading' | 'idle' = 'idle';
+  private is_last_page = false;
 
   constructor(container: Element, config: ScrolleryConfig) {
     this.config = config;
@@ -45,7 +46,17 @@ class Scrollery implements EventSystem, IScrollery {
     }
 
     return fetch(fetch_url, this.config.fetchOptions)
-      .then((response) => response.text())
+      .then((response) => {
+        if (response.status === 404) {
+          this.is_last_page = true;
+          this.status = 'idle';
+          this.toggleSpinner();
+          this.trigger('last');
+        }
+
+        this.trigger('load');
+        return response.text();
+      })
       .then((data) => {
         this.pagination_number++;
         return data;
@@ -71,23 +82,20 @@ class Scrollery implements EventSystem, IScrollery {
         ?.insertAdjacentElement('beforebegin', node);
     });
     this.trigger('insert');
+    this.status = 'idle';
+    this.toggleSpinner();
   }
 
   public async loadNextPage() {
+    if (this.is_last_page) return;
+
     this.status = 'loading';
     this.toggleSpinner();
 
-    try {
-      const nextContent = await this.fetchNextPageContent();
-      const nodeList = this.parseHtmlText(nextContent, this.config.content);
-      this.insertElements(nodeList);
-      this.trigger('load');
-    } catch (err) {
-      console.log(err);
-    } finally {
-      this.status = 'idle';
-      this.toggleSpinner();
-    }
+    const nextContent = await this.fetchNextPageContent();
+    const nodeList = this.parseHtmlText(nextContent, this.config.content);
+
+    this.insertElements(nodeList);
   }
 
   public on(event: ScrolleryEvents, eventHandler: () => void): void {
