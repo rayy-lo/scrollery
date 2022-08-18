@@ -26,6 +26,7 @@ class Scrollery implements EventSystem, IScrollery {
   }
 
   private toggleSpinner() {
+    if (this.config.showSpinner === false) return;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const spinnerWrapper = window.document.querySelector<HTMLElement>(
       '.scrollery-spinner-wrapper'

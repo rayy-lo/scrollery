@@ -9,10 +9,9 @@ export default interface ScrolleryConfig extends IntersectionObserverInit {
    */
   content: string;
   /**
-   * Different svg spinners to choose from based on number
-   * TODO: Add more types
+   * Determines whether to show a spinner while
    */
-  spinner: number;
+  showSpinner: boolean;
   /**
    * Fetch options for fetch request
    */
@@ -20,5 +19,5 @@ export default interface ScrolleryConfig extends IntersectionObserverInit {
   /**
    * Response type from content fetch
    */
-  responseType: 'text/html' | 'json';
+  responseType: 'text' | 'json';
 }
