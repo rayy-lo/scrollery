@@ -21,48 +21,68 @@ afterEach(() => {
   scrollery = null;
 });
 
-describe('Scrollery Event System', () => {
+describe('Scrollery Interface', () => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const eventCallback = () => {};
-  it('should attach a callback fn for the load event', () => {
-    scrollery.on('load', eventCallback);
+  const mockEventHandler = jest.fn();
 
-    expect(scrollery.handlers).toHaveProperty('load', eventCallback);
-  });
+  describe('.on method', () => {
+    it('should exist and be a function', () => {
+      expect(typeof scrollery.on).toBe('function');
+    });
 
-  it('should throw an error for non-event strings', () => {
-    expect(() => {
-      scrollery
-        .on('fake event', eventCallback)
-        .toThrow(/not a possible Scrollery event/);
+    it('should attach a callback fn for the load event', () => {
+      scrollery.on('load', mockEventHandler);
+      scrollery.trigger('load');
+
+      expect(scrollery.handlers).toHaveProperty('load', mockEventHandler);
+      expect(mockEventHandler).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error for non-event strings', () => {
+      expect(() => {
+        scrollery
+          .on('fake event', mockEventHandler)
+          .toThrow(/not a possible Scrollery event/);
+      });
     });
   });
 
-  it('should invoke the corresponding event handler', () => {
-    scrollery.handlers['load'] = jest.fn();
-    scrollery.trigger('load');
-    expect(scrollery.handlers['load']).toHaveBeenCalled();
+  describe('.off method', () => {
+    it('should exist and be a function', () => {
+      expect(typeof scrollery.off).toBe('function');
+    });
+
+    it('should remove event handler for specific event', () => {
+      scrollery.on('load', mockEventHandler);
+      expect(scrollery.handlers).toHaveProperty('load', mockEventHandler);
+
+      scrollery.off('load');
+      expect(scrollery.handlers).not.toHaveProperty('load');
+    });
   });
 
-  it('should remove event handler for specific event', () => {
-    scrollery.on('load', eventCallback);
-    expect(scrollery.handlers).toHaveProperty('load', eventCallback);
+  describe('.loadNextPage', () => {
+    it('should exist and be a function', () => {
+      expect(typeof scrollery.loadNextPage).toBe('function');
+    });
 
-    scrollery.off('load');
-    expect(scrollery.handlers).not.toHaveProperty('load');
+    it('should parse string into HTML and return list of desired Elements ', () => {
+      const htmlString =
+        '<main><div class="grid__item">First</div><div class="grid__item">Second</div></main>';
+
+      const selectedDOMNodes = scrollery.parseHtmlText(
+        htmlString,
+        scrollery.config.content
+      );
+
+      expect(selectedDOMNodes).toHaveLength(2);
+      expect(selectedDOMNodes[0].classList.contains('grid__item')).toBe(true);
+    });
   });
-});
 
-describe('Scrollery Load Content', () => {
-  it('should parse string into HTML and return list of desired Elements ', () => {
-    const htmlString =
-      '<main><div class="grid__item">First</div><div class="grid__item">Second</div></main>';
-
-    const selectedDOMNodes = scrollery.parseHtmlText(
-      htmlString,
-      scrollery.config.content
-    );
-
-    expect(selectedDOMNodes).toHaveLength(2);
+  describe('.insertContentElement', () => {
+    it('should exist and be a function', () => {
+      expect(typeof scrollery.insertContentElement).toBe('function');
+    });
   });
 });
