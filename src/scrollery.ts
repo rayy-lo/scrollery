@@ -79,14 +79,22 @@ class Scrollery implements EventSystem, IScrollery {
     return htmlContent;
   }
 
-  private insertElements(elements: NodeListOf<Element>) {
-    if (elements.length === 0) return;
+  public insertContentElement(content: NodeListOf<Element> | string) {
+    const spinner = this.container.querySelector('.scrollery-spinner-wrapper');
 
-    elements.forEach((node) => {
-      this.container
-        .querySelector('.scrollery-spinner-wrapper')
-        ?.insertAdjacentElement('beforebegin', node);
-    });
+    if (typeof content === 'string') {
+      spinner?.insertAdjacentHTML('beforebegin', content);
+    } else if (typeof content === 'object' && content !== null) {
+      content.forEach((node) => {
+        spinner?.insertAdjacentElement('beforebegin', node);
+      });
+    } else {
+      throw new Error(
+        'Error inserting content. Content should be text or list of elements'
+      );
+    }
+
+    this.trigger('insert');
   }
 
   public async loadNextPage() {
@@ -99,12 +107,11 @@ class Scrollery implements EventSystem, IScrollery {
 
     if (typeof nextContent === 'string') {
       const nodeList = this.parseHtmlText(nextContent, this.config.content);
-      this.insertElements(nodeList);
+      this.insertContentElement(nodeList);
     } else {
       this.trigger('load.json', nextContent);
     }
 
-    this.trigger('insert');
     this.status = 'idle';
     this.toggleSpinner();
   }
