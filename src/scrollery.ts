@@ -51,15 +51,11 @@ class Scrollery implements EventSystem, IScrollery {
     }
 
     return fetch(fetch_url, this.config.fetchOptions).then((response) => {
-      if (response.status === 404) {
+      if (response.status !== 200) {
         this.is_last_page = true;
-        this.status = 'idle';
-        this.toggleSpinner();
         this.trigger('last');
+        throw new Error('Error fetching content');
       }
-
-      this.pagination_number++;
-      this.trigger('load');
 
       if (response.headers.get('Content-Type')?.includes('application/json')) {
         return response.json();
@@ -88,10 +84,6 @@ class Scrollery implements EventSystem, IScrollery {
       content.forEach((node) => {
         spinner?.insertAdjacentElement('beforebegin', node);
       });
-    } else {
-      throw new Error(
-        'Error inserting content. Content should be text or list of elements'
-      );
     }
 
     this.trigger('insert');
@@ -103,17 +95,23 @@ class Scrollery implements EventSystem, IScrollery {
     this.status = 'loading';
     this.toggleSpinner();
 
-    const nextContent = await this.fetchNextPageContent();
+    try {
+      const nextContent = await this.fetchNextPageContent();
+      this.pagination_number++;
+      this.trigger('load');
 
-    if (typeof nextContent === 'string') {
-      const nodeList = this.parseHtmlText(nextContent, this.config.content);
-      this.insertContentElement(nodeList);
-    } else {
-      this.trigger('load.json', nextContent);
+      if (typeof nextContent === 'string') {
+        const nodeList = this.parseHtmlText(nextContent, this.config.content);
+        this.insertContentElement(nodeList);
+      } else {
+        this.trigger('load.json', nextContent);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      this.status = 'idle';
+      this.toggleSpinner();
     }
-
-    this.status = 'idle';
-    this.toggleSpinner();
   }
 
   public on(event: ScrolleryEvents, eventHandler: () => void): void {
