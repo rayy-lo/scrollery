@@ -17,4 +17,8 @@ export default interface ScrolleryConfig extends IntersectionObserverInit {
    * Fetch options for fetch request
    */
   fetchOptions: RequestInit;
+  /**
+   * Response type from content fetch
+   */
+  responseType: 'text/html' | 'json';
 }

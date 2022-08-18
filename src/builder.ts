@@ -11,7 +11,8 @@ class ScrolleryBuilder {
     rootMargin: '200px',
     root: null,
     fetchOptions: {},
-    spinner: 1
+    spinner: 1,
+    responseType: 'text/html'
   };
 
   private static createObserver(): void {

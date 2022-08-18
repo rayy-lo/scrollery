@@ -57,11 +57,9 @@ class Scrollery implements EventSystem, IScrollery {
         throw new Error('Error fetching content');
       }
 
-      if (response.headers.get('Content-Type')?.includes('application/json')) {
-        return response.json();
-      }
-
-      return response.text();
+      return this.config.responseType === 'json'
+        ? response.json()
+        : response.text();
     });
   }
 
