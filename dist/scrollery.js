@@ -30,9 +30,23 @@ var Scrollery = (function () {
         constructor(container, config) {
             this.handlers = {};
             this.pagination_number = 2;
-            this.events = ['load', 'last', 'insert'];
-            this.config = Object.freeze(config);
+            this.events = [
+                'load',
+                'load.json',
+                'last',
+                'insert'
+            ];
+            this.status = 'idle';
+            this.is_last_page = false;
+            this.config = config;
             this.container = container;
+        }
+        toggleSpinner() {
+            if (this.config.showSpinner === false)
+                return;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            const spinnerWrapper = window.document.querySelector('.scrollery-spinner-wrapper');
+            spinnerWrapper.style.opacity = this.status === 'loading' ? '1' : '0';
         }
         fetchNextPageContent() {
             let fetch_url;
@@ -47,11 +61,15 @@ var Scrollery = (function () {
             else {
                 fetch_url = this.config.path(this.pagination_number);
             }
-            return fetch(fetch_url, this.config.fetchOptions)
-                .then((response) => response.text())
-                .then((data) => {
-                this.pagination_number++;
-                return data;
+            return fetch(fetch_url, this.config.fetchOptions).then((response) => {
+                if (response.status !== 200) {
+                    this.is_last_page = true;
+                    this.trigger('last');
+                    throw new Error('Error fetching content');
+                }
+                return this.config.responseType === 'json'
+                    ? response.json()
+                    : response.text();
             });
         }
         parseHtmlText(content, selector) {
@@ -60,41 +78,63 @@ var Scrollery = (function () {
                 .querySelectorAll(selector);
             return htmlContent;
         }
-        insertElements(elements) {
-            if (elements.length === 0)
-                return;
-            elements.forEach((node) => {
-                var _a;
-                (_a = this.container
-                    .querySelector('.scrollery-spinner-wrapper')) === null || _a === void 0 ? void 0 : _a.insertAdjacentElement('beforebegin', node);
-            });
+        insertContentElement(content) {
+            const spinner = this.container.querySelector('.scrollery-spinner-wrapper');
+            if (typeof content === 'string') {
+                spinner === null || spinner === void 0 ? void 0 : spinner.insertAdjacentHTML('beforebegin', content);
+            }
+            else if (typeof content === 'object' && content !== null) {
+                content.forEach((node) => {
+                    spinner === null || spinner === void 0 ? void 0 : spinner.insertAdjacentElement('beforebegin', node);
+                });
+            }
+            this.trigger('insert');
         }
         loadNextPage() {
             return __awaiter(this, void 0, void 0, function* () {
+                if (this.is_last_page)
+                    return;
+                this.status = 'loading';
+                this.toggleSpinner();
                 try {
                     const nextContent = yield this.fetchNextPageContent();
-                    const nodeList = this.parseHtmlText(nextContent, this.config.content);
-                    this.insertElements(nodeList);
+                    this.pagination_number++;
                     this.trigger('load');
+                    if (typeof nextContent === 'string') {
+                        const nodeList = this.parseHtmlText(nextContent, this.config.content);
+                        this.insertContentElement(nodeList);
+                    }
+                    else {
+                        this.trigger('load.json', nextContent);
+                    }
                 }
                 catch (err) {
-                    console.log(err);
+                    console.error(err);
+                }
+                finally {
+                    this.status = 'idle';
+                    this.toggleSpinner();
                 }
             });
         }
         on(event, eventHandler) {
             if (!this.events.includes(event))
                 throw new Error(`${event} is not a possible Scrollery event`);
-            this.handlers['load'] = eventHandler;
+            this.handlers[event] = eventHandler;
         }
         off(event) {
             if (!Object.prototype.hasOwnProperty.call(this.handlers, event))
                 throw new Error(`No handler exists for '${event}' event`);
             delete this.handlers[event];
         }
-        trigger(event) {
-            var _a, _b;
-            (_b = (_a = this.handlers)[event]) === null || _b === void 0 ? void 0 : _b.call(_a);
+        trigger(event, data) {
+            var _a, _b, _c, _d;
+            if (event === 'load.json') {
+                (_b = (_a = this.handlers)['load.json']) === null || _b === void 0 ? void 0 : _b.call(_a, data);
+            }
+            else {
+                (_d = (_c = this.handlers)[event]) === null || _d === void 0 ? void 0 : _d.call(_c);
+            }
         }
     }
 
@@ -126,10 +166,10 @@ var Scrollery = (function () {
             const spinnerWrapper = window.document.createElement('div');
             spinnerWrapper.classList.add('scrollery-spinner-wrapper');
             spinnerWrapper.innerHTML = spinner;
+            spinnerWrapper.style.opacity = '0';
             (_a = this.container) === null || _a === void 0 ? void 0 : _a.insertAdjacentElement('beforeend', spinnerWrapper);
         }
         static create(container, config) {
-            var _a, _b;
             if (!Object.prototype.hasOwnProperty.call(config, 'path') ||
                 !Object.prototype.hasOwnProperty.call(config, 'content')) {
                 throw new Error('Path or content missing in config');
@@ -147,7 +187,6 @@ var Scrollery = (function () {
             this.scrollery = scrollery;
             this.addLoadingElement();
             this.createObserver();
-            (_b = (_a = this.config).onInit) === null || _b === void 0 ? void 0 : _b.call(_a);
             return scrollery;
         }
     }
@@ -157,16 +196,9 @@ var Scrollery = (function () {
         threshold: 0,
         rootMargin: '200px',
         root: null,
-        checkLastPage: true,
-        fetchOptions: {
-            mode: 'cors',
-            cache: 'no-cache',
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'text/html'
-            }
-        },
-        spinner: 1
+        fetchOptions: {},
+        responseType: 'text',
+        showSpinner: false
     };
 
     return ScrolleryBuilder;
