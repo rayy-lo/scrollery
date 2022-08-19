@@ -3,6 +3,8 @@
     "target": "ES6",
     "module": "ESNext",
     "moduleResolution": "node",
+    "outDir": "src",
+    "declaration": true,
     "strict": true,
     "noImplicitAny": true /* Raise error on expressions and declarations with an implied 'any' type. */,
     "strictNullChecks": true /* Enable strict null checks. */,
