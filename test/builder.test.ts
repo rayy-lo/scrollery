@@ -24,4 +24,10 @@ describe('ScrolleryBuilder', () => {
 
     expect(scrollery).toBeInstanceOf(Scrollery);
   });
+
+  it('should throw an error that the container element does not exist', () => {
+    expect(() => {
+      ScrolleryBuilder.create('#grid', globalThis.config);
+    }).toThrow(/Container element does not exist/);
+  });
 });

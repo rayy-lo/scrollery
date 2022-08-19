@@ -26,6 +26,7 @@ class Scrollery implements EventSystem, IScrollery {
   }
 
   private toggleSpinner() {
+    if (this.config.showSpinner === false) return;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const spinnerWrapper = window.document.querySelector<HTMLElement>(
       '.scrollery-spinner-wrapper'
@@ -51,21 +52,15 @@ class Scrollery implements EventSystem, IScrollery {
     }
 
     return fetch(fetch_url, this.config.fetchOptions).then((response) => {
-      if (response.status === 404) {
+      if (response.status !== 200) {
         this.is_last_page = true;
-        this.status = 'idle';
-        this.toggleSpinner();
         this.trigger('last');
+        throw new Error('Error fetching content');
       }
 
-      this.pagination_number++;
-      this.trigger('load');
-
-      if (response.headers.get('Content-Type')?.includes('application/json')) {
-        return response.json();
-      }
-
-      return response.text();
+      return this.config.responseType === 'json'
+        ? response.json()
+        : response.text();
     });
   }
 
@@ -79,14 +74,18 @@ class Scrollery implements EventSystem, IScrollery {
     return htmlContent;
   }
 
-  private insertElements(elements: NodeListOf<Element>) {
-    if (elements.length === 0) return;
+  public insertContentElement(content: NodeListOf<Element> | string) {
+    const spinner = this.container.querySelector('.scrollery-spinner-wrapper');
 
-    elements.forEach((node) => {
-      this.container
-        .querySelector('.scrollery-spinner-wrapper')
-        ?.insertAdjacentElement('beforebegin', node);
-    });
+    if (typeof content === 'string') {
+      spinner?.insertAdjacentHTML('beforebegin', content);
+    } else if (typeof content === 'object' && content !== null) {
+      content.forEach((node) => {
+        spinner?.insertAdjacentElement('beforebegin', node);
+      });
+    }
+
+    this.trigger('insert');
   }
 
   public async loadNextPage() {
@@ -95,18 +94,23 @@ class Scrollery implements EventSystem, IScrollery {
     this.status = 'loading';
     this.toggleSpinner();
 
-    const nextContent = await this.fetchNextPageContent();
+    try {
+      const nextContent = await this.fetchNextPageContent();
+      this.pagination_number++;
+      this.trigger('load');
 
-    if (typeof nextContent === 'string') {
-      const nodeList = this.parseHtmlText(nextContent, this.config.content);
-      this.insertElements(nodeList);
-    } else {
-      this.trigger('load.json', nextContent);
+      if (typeof nextContent === 'string') {
+        const nodeList = this.parseHtmlText(nextContent, this.config.content);
+        this.insertContentElement(nodeList);
+      } else {
+        this.trigger('load.json', nextContent);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      this.status = 'idle';
+      this.toggleSpinner();
     }
-
-    this.trigger('insert');
-    this.status = 'idle';
-    this.toggleSpinner();
   }
 
   public on(event: ScrolleryEvents, eventHandler: () => void): void {

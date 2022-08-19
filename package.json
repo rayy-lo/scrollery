@@ -1,7 +1,8 @@
 {
   "name": "scrollery",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "browser": "dist/scrollery.js",
+  "types": "dist/index.d.ts",
   "author": "Raymond Lo <raymondlo109@gmail.com>",
   "keywords": [
     "scrollery",
