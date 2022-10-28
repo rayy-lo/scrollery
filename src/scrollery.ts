@@ -46,10 +46,13 @@ class Scrollery implements EventSystem, IScrollery {
       fetch_url =
         window.location.origin +
         window.location.pathname +
+        '?' +
         searchParams.toString();
     } else {
       fetch_url = this.config.path(this.pagination_number);
     }
+
+    encodeURI(fetch_url);
 
     return fetch(fetch_url, this.config.fetchOptions).then((response) => {
       if (response.status !== 200) {
