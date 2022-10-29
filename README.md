@@ -15,9 +15,9 @@ A modern infinite scrolling library
 **CDN:**
 
 ```html
-<script src="https://unpkg.com/scrollery@1.1.0/dist/scrollery.min.js"></script>
+<script src="https://unpkg.com/scrollery@1.2.0/dist/scrollery.min.js"></script>
 <!-- or -->
-<script src="https://unpkg.com/scrollery@1.1.0/dist/scrollery.js"></script>
+<script src="https://unpkg.com/scrollery@1.2.0/dist/scrollery.js"></script>
 ```
 
 **NPM:**
